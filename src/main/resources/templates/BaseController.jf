@@ -1,0 +1,107 @@
+package #(myGenerator.baseControllerPackageName);
+
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.HttpKit;
+import com.jfinal.upload.UploadFile;
+
+import io.jsonwebtoken.Claims;
+
+public class BaseController extends Controller {
+
+	protected Logger logger = LoggerFactory.getLogger(getClass());
+	protected Map<String, String> paras = new HashMap<String, String>();
+	protected Map<String, Object> map = new HashMap<String, Object>();
+
+	public String getAccount() {
+		try {
+			Subject subject = SecurityUtils.getSubject();
+			return subject.getPrincipal().toString();
+		} catch (Exception e) {
+			// logger.error(e.getMessage());
+		}
+
+		return null;
+	}
+
+	/**
+	 * token信息注入
+	 * 
+	 * @param claims
+	 */
+	public void injectClaims(Claims claims) {
+		this.paras.put("account_username", claims.get("account_username").toString());
+	}
+
+	/**
+	 * @Description: 参数注入
+	 */
+	public void injectParas() {
+		// 处理GET参数
+		paras.clear();
+		Enumeration<String> paraNames = getParaNames();
+		while (paraNames.hasMoreElements()) {
+			String paraName = paraNames.nextElement();
+			if (!"".equals(getPara(paraName)))
+				paras.put(paraName, getPara(paraName));
+		}
+
+		// 处理POST参数
+		map.clear();
+		UploadFile file;
+		String contentType = getRequest().getContentType(); // 获取Content-Type
+		if ((contentType != null) && (contentType.toLowerCase().startsWith("multipart/"))) {
+			file = getFile(); // 先读文件
+			if (file != null) {
+				map.put("file", file);
+			}
+
+			// 再取其他参数
+			Enumeration<String> data = getParaNames();
+			while (data.hasMoreElements()) {
+				String paraName = data.nextElement();
+				if (getParaValues(paraName).length > 1) {
+					map.put(paraName, getParaValues(paraName));
+				} else {
+					if (!"".equals(getPara(paraName)))
+						map.put(paraName, getPara(paraName));
+				}
+			}
+		} else {
+			try {
+				String postJson = HttpKit.readData(getRequest());
+				map =JSON.parseObject(postJson, Map.class);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		}
+
+	}
+
+	/**
+	 * 判断是否拥有角色
+	 */
+	public boolean hasRole(String roleIdentifier) {
+		Subject subject = SecurityUtils.getSubject();
+		return subject != null && subject.hasRole(roleIdentifier);
+	}
+
+	/**
+	 * 判断是否拥有全部角色
+	 */
+	public boolean hasAllRoles(List<String> roleIdentifiers) {
+		Subject subject = SecurityUtils.getSubject();
+		return subject != null && subject.hasAllRoles(roleIdentifiers);
+	}
+
+}

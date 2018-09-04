@@ -1,0 +1,48 @@
+#@adminLayout()
+#define main()
+<div class="admin-content-box">
+	<!-- 列表 -->
+	<div class="jf-admin-panel-box">
+		<div>
+			<button class="layui-btn" onclick="showFancyBox('/demo/test/add">添加</button>
+		</div>
+		<table class="layui-table" lay-skin="line">
+		  <thead>
+		    <tr>
+		      <th></th>
+		      <th></th>
+		      <th>操作</th>
+		    </tr>
+		  </thead>
+		  <tbody>
+		   #for(x : page.list)
+		    <tr>
+		      	<td>#(x.id)</td>
+		      	<td>#(x.test)</td>
+		      <td>
+					<span onclick="showFancyBox('/demo/test/view?id=#(x.id)')">查看</span>
+					<span onclick="showFancyBox('/demo/test/edit?id=#(x.id)')">更新</span>
+					<span onclick="showFancyBox('/demo/test/delete?id=#(x.id)')">删除</span>
+		      </td>
+		    </tr>
+		   #end
+		  </tbody>
+		</table>
+
+		#@paginate(accountPage.pageNumber, accountPage.totalPage, "/demo/test/list?p=")
+
+	</div>
+
+</div>
+#end
+
+#define css()
+
+#end
+
+#define js()
+
+	<script type="text/javascript">
+
+	</script>
+#end

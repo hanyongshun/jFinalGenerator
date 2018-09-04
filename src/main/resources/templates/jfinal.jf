@@ -1,0 +1,11 @@
+#######Mysql数据库########
+#(myGenerator.jdbcUrlName) =#(myGenerator.jdbcUrlValue)
+#(myGenerator.userName) =#(myGenerator.userValue)
+#(myGenerator.passwordName) =#(myGenerator.passwordValue)
+
+initialSize=1
+minIdle=1
+maxActive=20
+
+devMode =true
+driverClass=com.mysql.jdbc.Driver

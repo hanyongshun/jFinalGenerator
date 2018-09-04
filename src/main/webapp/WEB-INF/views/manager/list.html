@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+<link href="/bootstrap_jquery_plugin/css/bootstrap.min.css"
+	rel="stylesheet">
+<script src="/bootstrap_jquery_plugin/js/jquery-1.10.2.min.js"></script>
+<script src="/bootstrap_jquery_plugin/js/bootstrap.min.js"></script>
+<script src="/bootstrap_jquery_plugin/js/jquery.bootstrap.min.js"></script>
+<script src="/bootstrap_jquery_plugin/js/jquery.twbsPagination.min.js"></script>
+<script src="/js/form/jquery.form.js"></script>
+<script src="/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$('#beginTime').click(function() {
+			WdatePicker();
+			//WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});//显示时分秒
+		});
+		$('#endTime').click(function() {
+			WdatePicker();
+			//WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});//显示时分秒
+		});
+		$('#query_btn').click(function() {
+			$('#currentPage').val(1);
+			$('#queryForm').submit();
+		});
+ 		$('#pagination').twbsPagination({
+ 			totalPages: ${pageResult.totalPage},
+			visiblePages:5,
+			startPage: ${pageResult.pageNumber},
+			onPageClick : function(event,page){
+				$('#currentPage').val(page);
+				$('#queryForm').submit();
+			}
+		});
+	})
+</script>
+</head>
+<body>
+	<form id="queryForm" class="form-inline" action="/manager/list" method="post">
+		<input type="hidden" id="currentPage" name="qo.currentPage"/>
+		<div class="form-group">
+			<label for="exampleInputName2">认证时间</label> <input type="text"
+				class="form-control" id="beginTime" name="qo.beginTime" value='${(qo.beginTime?string("yyyy-MM-dd"))!""}'>-<input
+				type="text" class="form-control" id="endTime" name="qo.endTime" value='${(qo.endTime?string("yyyy-MM-dd"))!""}'>
+		</div>
+		<div class="form-group">
+			<label for="exampleInputName2">认证状态</label> <input type="text"
+				class="form-control" id="state" name="qo.state" value='${(qo.state)!""}'>
+		</div>
+		<div class="form-group">
+			<label for="exampleInputName2">关键字</label> <input type="text"
+				class="form-control" id="keyword" name="qo.keyword" value='${(qo.keyword)!""}'>
+		</div>
+
+		<button id="query_btn" type="button" class="btn btn-default">搜索</button>
+	</form>
+	<table class="table table-bordered table-bordered">
+		<thead>
+			<tr>
+				<th>认证方式
+				<th>认证状态
+				<th>认证人
+				<th>认证号码
+				<th>认证时间
+				<th>相似度
+				<th>认证照/现场照
+			</tr>
+		</thead>
+		<tbody>
+			<#list pageResult.list as record>
+			<tr>
+				<td>${record.type!""}
+				<td>${record.state!""}
+				<td>${record.c_name!""}
+				<td>${record.c_idNum!""}
+				<td>${record.authTime!""}
+				<td>${record.result!""}
+				<td>
+			</tr>
+			</#list>
+		</tbody>
+	</table>
+	<div style="text-align: center;">
+		<ul id="pagination" class="pagination-sm"></ul>
+	</div>
+</body>
+</html>

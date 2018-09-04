@@ -1,0 +1,35 @@
+package #(myGenerator.controllerPackageName);
+
+import com.jfinal.plugin.activerecord.Page;
+import #(myGenerator.modelPackageName).#(tableMeta.modelName);
+#if(myGenerator.hasQueryObj())
+import #(myGenerator.queryPackageName).#(tableMeta.modelName)QueryObject;
+#else
+#end
+#if(myGenerator.hasService())
+import #(myGenerator.servicePackageName).#(tableMeta.modelName)Service;
+#else
+#end
+import #(myGenerator.baseControllerPackageName).#(myGenerator.baseControllerClassName);
+
+public class #(tableMeta.modelName)Controller extends BaseController{
+#if(myGenerator.hasService())
+	#(tableMeta.modelName)Service #(tableMeta.name)Service=new #(tableMeta.modelName)Service();
+#else
+#end
+	
+#if(myGenerator.hasQueryObj())
+	public void testPage(){
+		#(tableMeta.modelName)QueryObject qo=getBean(#(tableMeta.modelName)QueryObject.class);
+		Page<#(tableMeta.modelName)> paginate = #(tableMeta.modelName).dao.paginate(qo);
+		System.out.println(paginate.getList());
+		renderText("查询");
+	}
+#else
+	public void testPage(){
+		Page<#(tableMeta.modelName)> paginate = #(tableMeta.modelName).dao.paginate(map);
+		System.out.println(paginate.getList());
+		renderText("查询");
+	}
+#end
+}

@@ -1,0 +1,20 @@
+package #(myGenerator.jfinalPackageName);
+
+import com.jfinal.config.Routes;
+#for(tableMeta:tableMetas)
+import #(myGenerator.controllerPackageName).#(tableMeta.modelName)Controller;
+#end
+import #(myGenerator.controllerPackageName).#(myGenerator.indexControllerClassName);
+
+public class #(myGenerator.coreRoutesName) extends Routes{
+
+	@Override
+	public void config() {
+		setBaseViewPath("/WEB-INF/views/");
+		add("/",IndexController.class);
+		#for(tableMeta:tableMetas)
+		add("/#(tableMeta.modelName.toLowerCase())", #(tableMeta.modelName)Controller.class);
+		#end
+	}
+
+}

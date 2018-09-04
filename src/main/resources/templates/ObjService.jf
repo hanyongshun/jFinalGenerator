@@ -1,0 +1,22 @@
+package #(myGenerator.servicePackageName);
+
+import com.jfinal.plugin.activerecord.Page;
+import #(myGenerator.modelPackageName).#(tableMeta.modelName);
+#if(myGenerator.hasQueryObj())
+import #(myGenerator.queryPackageName).#(tableMeta.modelName)#(myGenerator.queryObjectName);
+#else
+import java.util.Map;
+#end
+
+public class #(tableMeta.modelName)Service{
+#if(myGenerator.hasQueryObj())
+	public Page<#(tableMeta.modelName)> paginate(#(tableMeta.modelName)QueryObject qo) {
+		return #(tableMeta.modelName).dao.paginate(qo);
+	}
+#else
+	public Page<#(tableMeta.modelName)> paginate(Map qo) {
+		return #(tableMeta.modelName).dao.paginate(qo);
+	}
+#end
+
+}
